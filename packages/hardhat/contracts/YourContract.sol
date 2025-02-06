@@ -15,13 +15,13 @@ import "hardhat/console.sol";
 contract YourContract {
     // State Variables
     address public immutable owner;
-    string public greeting = "Building Unstoppable Apps!!!";
+    string public RWA = "Building Unstoppable Apps!!!";
     bool public premium = false;
     uint256 public totalCounter = 0;
-    mapping(address => uint) public userGreetingCounter;
+    mapping(address => uint) public userRWACounter;
 
     // Events: a way to emit log statements from smart contract that can be listened to by external parties
-    event GreetingChange(address indexed greetingSetter, string newGreeting, bool premium, uint256 value);
+    event RWAChange(address indexed RWASetter, string newRWA, bool premium, uint256 value);
 
     // Constructor: Called once on contract deployment
     // Check packages/hardhat/deploy/00_deploy_your_contract.ts
@@ -38,18 +38,18 @@ contract YourContract {
     }
 
     /**
-     * Function that allows anyone to change the state variable "greeting" of the contract and increase the counters
+     * Function that allows anyone to change the state variable "RWA" of the contract and increase the counters
      *
-     * @param _newGreeting (string memory) - new greeting to save on the contract
+     * @param _newRWA (string memory) - new RWA to save on the contract
      */
-    function setGreeting(string memory _newGreeting) public payable {
+    function setRWA(string memory _newRWA) public payable {
         // Print data to the hardhat chain console. Remove when deploying to a live network.
-        console.log("Setting new greeting '%s' from %s", _newGreeting, msg.sender);
+        console.log("Setting new RWA '%s' from %s", _newRWA, msg.sender);
 
         // Change state variables
-        greeting = _newGreeting;
+        RWA = _newRWA;
         totalCounter += 1;
-        userGreetingCounter[msg.sender] += 1;
+        userRWACounter[msg.sender] += 1;
 
         // msg.value: built-in global variable that represents the amount of ether sent with the transaction
         if (msg.value > 0) {
@@ -59,7 +59,7 @@ contract YourContract {
         }
 
         // emit: keyword used to trigger an event
-        emit GreetingChange(msg.sender, _newGreeting, msg.value > 0, msg.value);
+        emit RWAChange(msg.sender, _newRWA, msg.value > 0, msg.value);
     }
 
     /**

@@ -26,13 +26,13 @@ const deployedContracts = {
             {
               indexed: true,
               internalType: "address",
-              name: "greetingSetter",
+              name: "RWASetter",
               type: "address",
             },
             {
               indexed: false,
               internalType: "string",
-              name: "newGreeting",
+              name: "newRWA",
               type: "string",
             },
             {
@@ -48,12 +48,12 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
-          name: "GreetingChange",
+          name: "RWAChange",
           type: "event",
         },
         {
           inputs: [],
-          name: "greeting",
+          name: "RWA",
           outputs: [
             {
               internalType: "string",
@@ -94,11 +94,11 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "string",
-              name: "_newGreeting",
+              name: "_newRWA",
               type: "string",
             },
           ],
-          name: "setGreeting",
+          name: "setRWA",
           outputs: [],
           stateMutability: "payable",
           type: "function",
@@ -124,7 +124,7 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "userGreetingCounter",
+          name: "userRWACounter",
           outputs: [
             {
               internalType: "uint256",

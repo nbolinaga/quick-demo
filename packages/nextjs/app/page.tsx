@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { NextPage } from "next";
 import { useTheme } from "next-themes";
 import { parseEther } from "viem";
@@ -42,7 +43,7 @@ const Home: NextPage = () => {
     try {
       await writeContractAsync(
         {
-          functionName: "setGreeting",
+          functionName: "setRWA",
           args: [amount],
           value: parseEther(amount),
         },
@@ -62,88 +63,128 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
+      <div className="relative flex items-center flex-col flex-grow pt-10 h-screen bg-cover bg-fixed bg-center bg-[url('/stars.jpeg')] overflow-hidden ">
+        <div className="absolute left-1/2 top-full z-10 hidden h-screen w-full -translate-x-1/2 -translate-y-1/2 items-end justify-center md:flex ">
+          <Image
+            src={"/moon.png"}
+            width={1000}
+            height={1000}
+            alt="photo of the earth viewed from space / black and white"
+            className="h-auto w-full md:h-[100vh] md:w-auto animate-[spin_500s_linear_infinite] "
+          />
+        </div>
         <h1 className="text-6xl mb-10 w-1/2 text-center">
           Accumulate more RWA <br />
           with no leverage
         </h1>
-        <div className="bg-neutral p-10 rounded-box space-y-2">
-          <div className="rounded-box border p-5">
-            <label>Buy</label>
-            <div className="flex justify-center items-center mt-2">
-              <input
-                type="text"
-                placeholder={
-                  selectedRWA == "Select RWA"
-                    ? "Selected a rwa..."
-                    : selectedStrategy == "Select Strategy"
-                      ? "Selected a strategy..."
-                      : "Eth amount..."
-                }
-                value={amount}
-                onChange={
-                  selectedRWA !== "Select RWA" && selectedStrategy !== "Select Strategy"
-                    ? e => setAmount(e.target.value)
-                    : () => console.log("test")
-                }
-                className="input w-full max-w-xs"
-              />
-              <div className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="btn m-1">
-                  {selectedRWA}
-                </div>
-                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                  <li>
-                    <a onClick={() => handleSelectRWA("Pax Gold")}>PAX Gold</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectRWA("APF Coin")}>APF coin</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectRWA("RealToken")}>RealToken</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectRWA("Kinesis Silver")}>Kinesis Silver</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectRWA("Agridex")}>Agridex</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectRWA("Hifi Finance")}>Hifi Finance</a>
-                  </li>
-                </ul>
+        <div className="relative bg-neutral/90 p-10 !rounded-xl w-1/3 z-50">
+          <div className="rounded-box p-5 flex flex-col">
+            <label>Make a selection:</label>
+            <div className="dropdown dropdown-hover w-full">
+              <div tabIndex={0} role="button" className="btn m-1 w-full flex justify-between">
+                {selectedRWA}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
               </div>
+              <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow">
+                <li>
+                  <a onClick={() => handleSelectRWA("Pax Gold")}>PAXG (Gold)</a>
+                </li>
+                <li>
+                  <a onClick={() => handleSelectRWA("Kinesis Silver")}>KAG (Silver)</a>
+                </li>
+                <li>
+                  <a onClick={() => handleSelectRWA("APF Coin")}>APFC (Agriland)</a>
+                </li>
+                <li>
+                  <a onClick={() => handleSelectRWA("RealToken")}>REG (Real estate)</a>
+                </li>
+
+                <li>
+                  <a onClick={() => handleSelectRWA("Agridex")}>AGRI (Agricultural)</a>
+                </li>
+              </ul>
             </div>
-            <p className="text-xs text-gray-600 -mb-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
+            <div className="dropdown dropdown-hover w-full">
+              <div tabIndex={0} role="button" className="btn m-1 w-full flex justify-between">
+                {selectedStrategy}{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+              <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow w-full">
+                <li>
+                  <a onClick={() => handleSelectStrategy("Momentum")}>Trend Following (Momentum)</a>
+                </li>
+                <li>
+                  <a onClick={() => handleSelectStrategy("Smoothcoin")}>Reduced Volatility (Smoothcoin)</a>
+                </li>
+              </ul>
+            </div>
+            <p className="underline text-secondary cursor-pointer my-2 text-center flex justify-center items-center space-x-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6 mr-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                />
+              </svg>
+              Learn more about our strategies.
+            </p>
+            <input
+              type="text"
+              placeholder={
+                selectedRWA == "Select RWA"
+                  ? "Selected a rwa..."
+                  : selectedStrategy == "Select Strategy"
+                    ? "Selected a strategy..."
+                    : "Amount (ETH)..."
+              }
+              value={amount}
+              onChange={
+                selectedRWA !== "Select RWA" && selectedStrategy !== "Select Strategy"
+                  ? e => setAmount(e.target.value)
+                  : () => console.log("test")
+              }
+              className="input w-full m-1"
+              disabled={selectedRWA == "Select RWA" || selectedStrategy == "Select Strategy"}
+            />
           </div>
-          <div className="rounded-box border border-secondary p-5 bg-secondary">
-            <label>Strategy</label>
-            <div className="flex justify-center items-center mt-2">
-              <input
-                type="text"
-                placeholder="amount..."
-                value={(Number(amount) * (selectedStrategy == "Momentum" ? 3.14 : 2.78)).toLocaleString() + " Shares"}
-                className="input w-full max-w-xs"
-                disabled
-              />
-              <div className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="btn m-1">
-                  {selectedStrategy}
-                </div>
-                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                  <li>
-                    <a onClick={() => handleSelectStrategy("Momentum")}>Momentum</a>
-                  </li>
-                  <li>
-                    <a onClick={() => handleSelectStrategy("Smoothcoin")}>Smoothcoin</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <p className="text-xs text-gray-600 -mb-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
+          <div className="rounded-box border border-secondary p-5 bg-secondary flex flex-col my-2">
+            <label>Shares:</label>
+            <input
+              type="text"
+              placeholder="amount..."
+              value={(Number(amount) * (selectedStrategy == "Momentum" ? 3.14 : 2.78)).toLocaleString()}
+              className="input w-full m-1"
+              disabled
+            />
+            <p className="text-xs text-gray-600 my-0 pt-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
           </div>
           <button
-            className="btn w-full bg-primary"
+            className="btn w-full bg-primary rounded-md"
             onClick={() => handleGetStarted()}
             disabled={selectedRWA == "Select RWA" || selectedStrategy == "Select Strategy" || amount == ""}
           >
