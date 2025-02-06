@@ -1,70 +1,176 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
+import { useTheme } from "next-themes";
+import { parseEther } from "viem";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+  const [amount, setAmount] = useState<string>("");
+  const [selectedRWA, setSelectedRWA] = useState<string>("Select RWA");
+  const [selectedStrategy, setSelectedStrategy] = useState<string>("Select Strategy");
+
+  const { writeContractAsync } = useScaffoldWriteContract("YourContract");
+
+  const handleSelectStrategy = (e: string) => {
+    setSelectedStrategy(e);
+    const elem = document.activeElement;
+    if (elem) {
+      (elem as HTMLElement)?.blur();
+    }
+  };
+
+  const handleSelectRWA = (e: string) => {
+    setSelectedRWA(e);
+    const elem = document.activeElement;
+    if (elem) {
+      (elem as HTMLElement)?.blur();
+    }
+  };
+
+  const handleGetStarted = () => {
+    if (document) {
+      (document.getElementById("my_modal_1") as HTMLDialogElement)?.showModal();
+    }
+  };
+
+  const confirmPosition = async () => {
+    setAmount("");
+    setSelectedRWA("Select RWA");
+    setSelectedStrategy("Select Strategy");
+    try {
+      await writeContractAsync(
+        {
+          functionName: "setGreeting",
+          args: [amount],
+          value: parseEther(amount),
+        },
+        {
+          onBlockConfirmation: txnReceipt => {
+            console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+          },
+        },
+      );
+    } catch (e) {
+      console.error("Error setting greeting", e);
+    }
+  };
+
+  const { setTheme } = useTheme();
+  setTheme("business");
 
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} />
-          </div>
-
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
-
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
+        <h1 className="text-6xl mb-10 w-1/2 text-center">
+          Accumulate more RWA <br />
+          with no leverage
+        </h1>
+        <div className="bg-neutral p-10 rounded-box space-y-2">
+          <div className="rounded-box border p-5">
+            <label>Buy</label>
+            <div className="flex justify-center items-center mt-2">
+              <input
+                type="text"
+                placeholder={
+                  selectedRWA == "Select RWA"
+                    ? "Selected a rwa..."
+                    : selectedStrategy == "Select Strategy"
+                      ? "Selected a strategy..."
+                      : "Eth amount..."
+                }
+                value={amount}
+                onChange={
+                  selectedRWA !== "Select RWA" && selectedStrategy !== "Select Strategy"
+                    ? e => setAmount(e.target.value)
+                    : () => console.log("test")
+                }
+                className="input w-full max-w-xs"
+              />
+              <div className="dropdown dropdown-hover">
+                <div tabIndex={0} role="button" className="btn m-1">
+                  {selectedRWA}
+                </div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                  <li>
+                    <a onClick={() => handleSelectRWA("Pax Gold")}>PAX Gold</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectRWA("APF Coin")}>APF coin</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectRWA("RealToken")}>RealToken</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectRWA("Kinesis Silver")}>Kinesis Silver</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectRWA("Agridex")}>Agridex</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectRWA("Hifi Finance")}>Hifi Finance</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
+            <p className="text-xs text-gray-600 -mb-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
           </div>
+          <div className="rounded-box border border-secondary p-5 bg-secondary">
+            <label>Strategy</label>
+            <div className="flex justify-center items-center mt-2">
+              <input
+                type="text"
+                placeholder="amount..."
+                value={(Number(amount) * (selectedStrategy == "Momentum" ? 3.14 : 2.78)).toLocaleString() + " Shares"}
+                className="input w-full max-w-xs"
+                disabled
+              />
+              <div className="dropdown dropdown-hover">
+                <div tabIndex={0} role="button" className="btn m-1">
+                  {selectedStrategy}
+                </div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                  <li>
+                    <a onClick={() => handleSelectStrategy("Momentum")}>Momentum</a>
+                  </li>
+                  <li>
+                    <a onClick={() => handleSelectStrategy("Smoothcoin")}>Smoothcoin</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <p className="text-xs text-gray-600 -mb-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
+          </div>
+          <button
+            className="btn w-full bg-primary"
+            onClick={() => handleGetStarted()}
+            disabled={selectedRWA == "Select RWA" || selectedStrategy == "Select Strategy" || amount == ""}
+          >
+            {" "}
+            Get Started
+          </button>
         </div>
       </div>
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Confirm position?</h3>
+          <p className="pt-4">
+            Positon: {selectedRWA} {selectedStrategy}
+          </p>
+          <p>Eth Amount: {amount}</p>
+          <p>USDC: ${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
+          <p className="pb-4">Date: {Date()}</p>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn" onClick={() => confirmPosition()}>
+                Confirm
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </>
   );
 };

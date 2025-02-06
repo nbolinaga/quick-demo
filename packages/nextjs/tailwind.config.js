@@ -6,6 +6,9 @@ module.exports = {
   darkMode: ["selector", "[data-theme='dark']"],
   daisyui: {
     themes: [
+      "forest",
+      "coffee",
+      "business",
       {
         light: {
           primary: "#93BBFB",
