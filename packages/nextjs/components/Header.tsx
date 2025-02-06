@@ -89,12 +89,13 @@ export const Header = () => {
           )}
         </div>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <p>HODL Protocol</p>
+          <div className="col-span-1 my-5 flex h-full w-auto items-center justify-center md:my-0">
+            <Image src="/HODL.png" width={500} height={1000} alt="image" className="h-auto w-full md:h-10 md:w-auto" />
+          </div>
         </Link>
       </div>
       <div className="navbar-end flex-grow mr-4">
         <RainbowKitCustomConnectButton />
-        <FaucetButton />
       </div>
     </div>
   );

@@ -10,6 +10,17 @@ module.exports = {
       "coffee",
       "business",
       {
+        mytheme: {
+          primary: "#c1ea60",
+          secondary: "#535e73",
+          accent: "#2dbec6",
+          neutral: "#00ff00",
+          "base-100": "#1d2326",
+          info: "#dccd5b",
+          success: "#36eb87",
+          warning: "#ff9655",
+          error: "#ff7777",
+        },
         light: {
           primary: "#93BBFB",
           "primary-content": "#212638",

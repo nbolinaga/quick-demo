@@ -157,9 +157,9 @@ const Home: NextPage = () => {
               type="text"
               placeholder={
                 selectedRWA == "Select RWA"
-                  ? "Selected a rwa..."
+                  ? "Select a rwa first"
                   : selectedStrategy == "Select Strategy"
-                    ? "Selected a strategy..."
+                    ? "Select a strategy first"
                     : "Amount (ETH)..."
               }
               value={amount}
@@ -181,10 +181,10 @@ const Home: NextPage = () => {
               className="input w-full m-1"
               disabled
             />
-            <p className="text-xs text-gray-600 my-0 pt-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
+            <p className="text-md text-white my-0 pt-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
           </div>
           <button
-            className="btn w-full bg-primary rounded-md"
+            className="btn w-full bg-[#c1ea60] rounded-md text-black "
             onClick={() => handleGetStarted()}
             disabled={selectedRWA == "Select RWA" || selectedStrategy == "Select Strategy" || amount == ""}
           >
