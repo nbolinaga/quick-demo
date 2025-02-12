@@ -73,11 +73,11 @@ const Home: NextPage = () => {
             className="h-auto w-full md:h-[100vh] md:w-auto animate-[spin_500s_linear_infinite] "
           />
         </div>
-        <h1 className="text-6xl mb-10 w-1/2 text-center">
+        <h1 className="text-[8vw] md:text-6xl mb-10 md:w-1/2 text-center">
           Accumulate more RWA <br />
           with no leverage
         </h1>
-        <div className="relative bg-neutral/90 p-10 !rounded-xl w-1/3 z-50">
+        <div className="relative bg-neutral/90 p-5 md:p-10 !rounded-xl md:w-1/3 z-40 mx-10 md:mx-0">
           <div className="rounded-box p-5 flex flex-col">
             <label>Make a selection:</label>
             <div className="dropdown dropdown-hover w-full">

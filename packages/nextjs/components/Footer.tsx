@@ -34,7 +34,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="mt-10 h-fit items-center rounded-lg bg-dark px-10 py-6 md:mb-0 md:mt-0 md:grid md:grid-cols-3">
+      <div className="mt-10 h-fit items-center rounded-lg bg-dark px-10 md:py-6 md:mb-0 md:mt-0 md:grid md:grid-cols-3">
         <div className="col-span-1 flex items-center justify-center space-x-5 text-white md:justify-start">
           <a href="https://t.me/+MOdhyvB63StmMmE0" target="_blank">
             <Image src="/telegram-white.png" width={50} height={100} alt="image" className="h-6 w-6" />
