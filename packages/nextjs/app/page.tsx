@@ -2,12 +2,17 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { RWASelectData, StrategySelectData } from "./data";
 import type { NextPage } from "next";
 import { useTheme } from "next-themes";
 import { parseEther } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const date = new Date();
+
   const [amount, setAmount] = useState<string>("");
   const [selectedRWA, setSelectedRWA] = useState<string>("Select RWA");
   const [selectedStrategy, setSelectedStrategy] = useState<string>("Select Strategy");
@@ -23,6 +28,7 @@ const Home: NextPage = () => {
   };
 
   const handleSelectRWA = (e: string) => {
+    console.log(e);
     setSelectedRWA(e);
     const elem = document.activeElement;
     if (elem) {
@@ -36,10 +42,13 @@ const Home: NextPage = () => {
     }
   };
 
+  const handleCloseDialog = (): void => {
+    if (document) {
+      (document.getElementById("my_modal_1") as HTMLDialogElement)?.close();
+    }
+  };
+
   const confirmPosition = async () => {
-    setAmount("");
-    setSelectedRWA("Select RWA");
-    setSelectedStrategy("Select Strategy");
     try {
       await writeContractAsync(
         {
@@ -52,10 +61,13 @@ const Home: NextPage = () => {
             console.log("📦 Transaction blockHash", txnReceipt.blockHash);
           },
         },
-      );
+      ).then(() => (selectedRWA == "Pax Gold" && selectedStrategy == "Momentum" ? router.push("/position") : null));
     } catch (e) {
       console.error("Error setting greeting", e);
     }
+    setAmount("");
+    setSelectedRWA("Select RWA");
+    setSelectedStrategy("Select Strategy");
   };
 
   const { setTheme } = useTheme();
@@ -80,7 +92,9 @@ const Home: NextPage = () => {
         <div className="relative bg-neutral/90 p-5 md:p-10 !rounded-xl md:w-1/3 z-40 mx-10 md:mx-0">
           <div className="rounded-box p-5 flex flex-col">
             <label>Make a selection:</label>
-            <div className="dropdown dropdown-hover w-full">
+            <div className="dropdown w-full">
+              {" "}
+              {/** dropdown-hover */}
               <div tabIndex={0} role="button" className="btn m-1 w-full flex justify-between">
                 {selectedRWA}
                 <svg
@@ -95,25 +109,16 @@ const Home: NextPage = () => {
                 </svg>
               </div>
               <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-full p-2 shadow">
-                <li>
-                  <a onClick={() => handleSelectRWA("Pax Gold")}>PAXG (Gold)</a>
-                </li>
-                <li>
-                  <a onClick={() => handleSelectRWA("Kinesis Silver")}>KAG (Silver)</a>
-                </li>
-                <li>
-                  <a onClick={() => handleSelectRWA("APF Coin")}>APFC (Agriland)</a>
-                </li>
-                <li>
-                  <a onClick={() => handleSelectRWA("RealToken")}>REG (Real estate)</a>
-                </li>
-
-                <li>
-                  <a onClick={() => handleSelectRWA("Agridex")}>AGRI (Agricultural)</a>
-                </li>
+                {RWASelectData.map(item => (
+                  <li key={`RWASelectData-${item.key}`}>
+                    <a onClick={() => handleSelectRWA(item.value)}>{item.key}</a>
+                  </li>
+                ))}
               </ul>
             </div>
-            <div className="dropdown dropdown-hover w-full">
+            <div className="dropdown w-full">
+              {" "}
+              {/** dropdown-hover */}
               <div tabIndex={0} role="button" className="btn m-1 w-full flex justify-between">
                 {selectedStrategy}{" "}
                 <svg
@@ -128,12 +133,11 @@ const Home: NextPage = () => {
                 </svg>
               </div>
               <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow w-full">
-                <li>
-                  <a onClick={() => handleSelectStrategy("Momentum")}>Trend Following (Momentum)</a>
-                </li>
-                <li>
-                  <a onClick={() => handleSelectStrategy("Smoothcoin")}>Reduced Volatility (Smoothcoin)</a>
-                </li>
+                {StrategySelectData.map(item => (
+                  <li key={`StrategySelectData-${item.key}`}>
+                    <a onClick={() => handleSelectStrategy(item.value)}>{item.key}</a>
+                  </li>
+                ))}
               </ul>
             </div>
             <p className="underline text-secondary cursor-pointer my-2 text-center flex justify-center items-center space-x-2">
@@ -184,7 +188,7 @@ const Home: NextPage = () => {
             <p className="text-md text-white my-0 pt-1">${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
           </div>
           <button
-            className="btn w-full bg-[#c1ea60] rounded-md text-black "
+            className="btn w-full bg-[#c1ea60] rounded-md text-black hover:text-white"
             onClick={() => handleGetStarted()}
             disabled={selectedRWA == "Select RWA" || selectedStrategy == "Select Strategy" || amount == ""}
           >
@@ -196,18 +200,35 @@ const Home: NextPage = () => {
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Confirm position?</h3>
-          <p className="pt-4">
-            Positon: {selectedRWA} {selectedStrategy}
-          </p>
-          <p>Eth Amount: {amount}</p>
-          <p>USDC: ${(Number(amount) * 2827.19).toLocaleString() || 0}</p>
-          <p className="pb-4">Date: {Date()}</p>
+          <div className="flex flex-col gap-2 mt-5">
+            <div className="flex justify-between">
+              <span className="font-bold underline">Position:</span>{" "}
+              <span>
+                {selectedRWA} / {selectedStrategy}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-bold underline">Eth Amount:</span> <span>{amount}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-bold underline">USDC:</span>{" "}
+              <span>${(Number(amount) * 2827.19).toLocaleString() || 0}</span>
+            </div>
+            <div className="pb-4 flex justify-between">
+              <span className="font-bold underline">Date:</span> <span>{date.toLocaleDateString("es-ES")}</span>
+            </div>
+          </div>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button className="btn" onClick={() => confirmPosition()}>
-                Confirm
-              </button>
+              <div className="flex gap-4">
+                <button className="btn border-white hover:bg-white hover:text-black" onClick={handleCloseDialog}>
+                  Close
+                </button>
+                <button className="btn bg-[#c1ea60] text-black hover:bg-white" onClick={confirmPosition}>
+                  Confirm
+                </button>
+              </div>
             </form>
           </div>
         </div>
